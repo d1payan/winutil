@@ -587,6 +587,7 @@ $WPFdesktop.Add_Click({
         $WPFMiscTweaksLapPower.IsChecked = $false
         $WPFMiscTweaksLapNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $true
+        $WPFMiscTweaksBitsumPlan.IsChecked = $true
     })
 
 $WPFlaptop.Add_Click({
@@ -608,6 +609,7 @@ $WPFlaptop.Add_Click({
         $WPFMiscTweaksPower.IsChecked = $false
         $WPFMiscTweaksNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $true
+        $WPFMiscTweaksBitsumPlan.IsChecked = $true
     })
 
 $WPFminimal.Add_Click({
@@ -629,6 +631,7 @@ $WPFminimal.Add_Click({
         $WPFMiscTweaksLapPower.IsChecked = $false
         $WPFMiscTweaksLapNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $false
+        $WPFMiscTweaksBitsumPlan.IsChecked = $false
     })
 
 $WPFtweaksbutton.Add_Click({
@@ -984,6 +987,14 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Type DWord -Value 0000001
             $WPFMiscTweaksLapPower.IsChecked = $false
         }
+
+        If( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {
+            Write-Host "Activating Bitsum Optimized Power Plan..."
+            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutil/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
+            powercfg -import ".\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
+            powercfg -SETACTIVE 77777777-7777-7777-7777-777777777777
+        }
+
         If ( $WPFMiscTweaksLapNum.IsChecked -eq $true ) {
             Write-Host "Disabling NumLock after startup..."
             If (!(Test-Path "HKU:")) {
@@ -1271,6 +1282,9 @@ $WPFundoall.Add_Click({
         cmd /c RD /S /Q "%WinDir%\System32\GroupPolicy"
         cmd /c gpupdate /force
         # Considered using Invoke-GPUpdate but requires module most people won't have installed
+
+        Write-Host "Deleting Bitsum Power Plan..."
+        powercfg -delete 77777777-7777-7777-7777-777777777777
 
         Write-Output "Adjusting visual effects for appearance..."
         Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "DragFullWindows" -Type String -Value 1
