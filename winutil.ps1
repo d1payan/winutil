@@ -6,7 +6,7 @@
 #>
 
 #$inputXML = Get-Content "MainWindow.xaml" #uncomment for development
-$inputXML = (new-object Net.WebClient).DownloadString("https://raw.githubusercontent.com/d1payan/winutil/main/MainWindow.xaml") #uncomment for Production
+$inputXML = (new-object Net.WebClient).DownloadString("https://raw.githubusercontent.com/d1payan/winutilpp/main/MainWindow.xaml") #uncomment for Production
 
 $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [void][System.Reflection.Assembly]::LoadWithPartialName('presentationframework')
@@ -693,7 +693,7 @@ $WPFtweaksbutton.Add_Click({
         }
         If ( $WPFEssTweaksOO.IsChecked -eq $true ) {
             Write-Host "Running O&O Shutup with Recommended Settings"
-            curl.exe -ss "https://raw.githubusercontent.com/d1payan/winutil/main/files/ooshutup10.cfg" -o ooshutup10.cfg
+            curl.exe -ss "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/ooshutup10.cfg" -o ooshutup10.cfg
             curl.exe -ss "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -o OOSU10.exe
             ./OOSU10.exe ooshutup10.cfg /quiet
             $WPFEssTweaksOO.IsChecked = $false
@@ -990,7 +990,7 @@ $WPFtweaksbutton.Add_Click({
 
         If( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {
             Write-Host "Activating Bitsum Optimized Power Plan..."
-            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutil/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
+            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
             powercfg -import ".\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
             powercfg -SETACTIVE 77777777-7777-7777-7777-777777777777
         }
