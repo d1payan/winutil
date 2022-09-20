@@ -633,6 +633,14 @@ $WPFminimal.Add_Click({
 
 $WPFtweaksbutton.Add_Click({
 
+        If ( $WPFEssTweaksDVR.IsChecked -eq $true ) {
+            #Installing PowerRun to run some restricted registry keys
+            curl.exe -s "https://www.sordum.org/files/download/power-run/PowerRun.zip" -o ".\PowerRun.zip"
+            Expand-Archive -Path ".\PowerRun.zip" -DestinationPath ".\" -Force
+            Copy-Item -Path ".\PowerRun\PowerRun.exe" -Destination "C:\Windows\" -Force
+            Remove-Item -Path ".\PowerRun\", ".\PowerRun.zip" -Recurse
+        }
+
         If ( $WPFEssTweaksAH.IsChecked -eq $true ) {
             Write-Host "Disabling Activity History..."
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type DWord -Value 0
@@ -649,6 +657,9 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_HonorUserFSEBehaviorMode" -Type DWord -Value 0 -Force
             Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_EFSEFeatureFlags" -Type DWord -Value 0 -Force
             Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0 -Force
+
+            #Disabling Gamebar Presence Writer, which causes stutter in games
+            PowerRun.exe /SW:0 Powershell.exe -command {Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Gaming.GameBar.PresenceServer.Internal.PresenceWriter" -Name "ActivationType" -Type DWord -Value 0}
 
             $WPFEssTweaksDVR.IsChecked = $false
         }
