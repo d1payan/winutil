@@ -4,9 +4,20 @@ This is a FORK of [ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/win
 
 ***This utility is mainly focused on Optimizing your PC/Laptop for GAMING!***
 
+## Screenshots
 
-![screen-install](screen-install.png)
+![screen-install](screenshots/screen-install.png)
 
+![screen-install](screenshots/screen-tweaks.png)
+
+![screen-install](screenshots/screen-config.png)
+
+![screen-install](screenshots/screen-updates.png)
+
+
+## How to Run
+
+It is advisable to disable antivirus before running this, to prevent any irrelevant issue.
 
 **Launch Command:**
 
