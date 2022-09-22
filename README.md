@@ -42,9 +42,19 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
+
+### `1.1`
+
+> - **Modified ooshutup10.cfg**
+> 
+> - **Fixed GameDVR tweaks**
+> 
+> - **Disabled Gamebar Presence Writer to stop stuttering in games**
+
+
 ### `1.0`
 
-> **Added new programs to Installer**
+> - **Added new programs to Installer**
 >   - WhatsApp
 >   - Telegram
 >   - TeamSpeak
@@ -53,9 +63,11 @@ If you have any issues with the script please submit them to Issues tab here on 
 >   - Valorant
 >   - Autoruns
 >   
-> **Added redistributable packages to Config**
+> - **Added redistributable packages to Config**
 >   - Visual C++
 >   - DirectX
 >   
-> **Added driver installer to Config**
+> - **Added driver installer to Config**
 >   - Snappy Driver Installer Origin
+
+
