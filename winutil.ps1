@@ -976,6 +976,15 @@ $WPFtweaksbutton.Add_Click({
             $WPFMiscTweaksLapPower.IsChecked = $false
         }
 
+        If ( $WPFEssTweaksTimerResolution.IsChecked -eq $true ) {
+            Write-Host "Setting Timer Resolution Service..."
+            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_SetTimerResolutionService.exe" -o "$env:windir\_SetTimerResolutionService.exe"
+            cmd /c _SetTimerResolutionService.exe -install | Out-Null
+            cmd /c sc config STR start=auto | Out-Null
+            cmd /c net start STR | Out-Null
+            $WPFEssTweaksTimerResolution.IsChecked = $false
+        }
+
         If( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {
             Write-Host "Activating Bitsum Optimized Power Plan..."
             curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
@@ -1274,6 +1283,9 @@ $WPFundoall.Add_Click({
         Write-Host "Deleting Bitsum Power Plan..."
         powercfg -delete 77777777-7777-7777-7777-777777777777
 
+        Write-Host "Uninstalling Timer Resolution Service..."
+        cmd /c _SetTimerResolutionService.exe -uninstall | Out-Null
+       
         Write-Output "Adjusting visual effects for appearance..."
         Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "DragFullWindows" -Type String -Value 1
         Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -Type String -Value 400
