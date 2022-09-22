@@ -45,6 +45,8 @@ If you have any issues with the script please submit them to Issues tab here on 
 ### `1.1`
 
 > - **Added Bitsum Optimized Power Plan**
+>
+> - **Added Timer Resolution Tweaks**
 
 ### `1.1`
 
