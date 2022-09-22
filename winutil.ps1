@@ -576,6 +576,8 @@ $WPFdesktop.Add_Click({
         $WPFMiscTweaksLapNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $true
         $WPFMiscTweaksBitsumPlan.IsChecked = $true
+        $WPFTimerResolutionDesktop.IsChecked = $true
+        $WPFTimerResolutionLaptop.IsChecked = $false
     })
 
 $WPFlaptop.Add_Click({
@@ -598,6 +600,8 @@ $WPFlaptop.Add_Click({
         $WPFMiscTweaksNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $true
         $WPFMiscTweaksBitsumPlan.IsChecked = $true
+        $WPFTimerResolutionDesktop.IsChecked = $false
+        $WPFTimerResolutionLaptop.IsChecked = $true
     })
 
 $WPFminimal.Add_Click({
@@ -620,6 +624,8 @@ $WPFminimal.Add_Click({
         $WPFMiscTweaksLapNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $false
         $WPFMiscTweaksBitsumPlan.IsChecked = $false
+        $WPFTimerResolutionDesktop.IsChecked = $false
+        $WPFTimerResolutionLaptop.IsChecked = $false
     })
 
 $WPFtweaksbutton.Add_Click({
@@ -976,13 +982,27 @@ $WPFtweaksbutton.Add_Click({
             $WPFMiscTweaksLapPower.IsChecked = $false
         }
 
-        If ( $WPFEssTweaksTimerResolution.IsChecked -eq $true ) {
-            Write-Host "Setting Timer Resolution Service..."
+        If ( $WPFTimerResolutionDesktop.IsChecked -eq $true ) {
+            Write-Host "Applying Timer Resolution Tweaks..."
+            bcdedit /deletevalue useplatformclock | Out-Null #Disable High Precision Event Timer(HPET) in BIOS
+            bcdedit /set useplatformtick yes | Out-Null #Disable Synthetic Timers (Convert 0.499 timer resolution value to 0.50)
             curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_SetTimerResolutionService.exe" -o "$env:windir\_SetTimerResolutionService.exe"
             cmd /c _SetTimerResolutionService.exe -install | Out-Null
             cmd /c sc config STR start=auto | Out-Null
             cmd /c net start STR | Out-Null
-            $WPFEssTweaksTimerResolution.IsChecked = $false
+            $WPFTimerResolutionDesktop.IsChecked = $false
+        }
+
+        If ( $WPFTimerResolutionLaptop.IsChecked -eq $true ) {
+            Write-Host "Applying Timer Resolution Tweaks..."
+            bcdedit /deletevalue useplatformclock | Out-Null #Disable High Precision Event Timer(HPET) in BIOS
+            bcdedit /set useplatformtick yes | Out-Null #Disable Synthetic Timers (Convert 0.499 timer resolution value to 0.50)
+            bcdedit /set disabledynamictick yes | Out-Null #Disable laptop power saving feature to gain maximum performance
+            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_SetTimerResolutionService.exe" -o "$env:windir\_SetTimerResolutionService.exe"
+            cmd /c _SetTimerResolutionService.exe -install | Out-Null
+            cmd /c sc config STR start=auto | Out-Null
+            cmd /c net start STR | Out-Null
+            $WPFTimerResolutionLaptop.IsChecked = $false
         }
 
         If( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {

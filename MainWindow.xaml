@@ -170,7 +170,8 @@
 							<CheckBox Name="EssTweaksHiber" Content="Disable Hibernation" Margin="5,0"/>
 							<CheckBox Name="EssTweaksDVR" Content="Disable GameDVR" Margin="5,0"/>
 							<CheckBox Name="EssTweaksServices" Content="Set Services to Manual" Margin="5,0"/>
-							<CheckBox Name="EssTweaksTimerResolution" Content="Set Timer Resolution Service" Margin="5,0"/>
+							<CheckBox Name="TimerResolutionDesktop" Content="Timer Resolution Tweaks (Desktop)" Margin="5,0"/>
+							<CheckBox Name="TimerResolutionLaptop" Content="Timer Resolution Tweaks (Laptop)" Margin="5,0"/>
 
 
 						</StackPanel>
