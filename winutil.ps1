@@ -1157,16 +1157,19 @@ $WPFtweaksbutton.Add_Click({
             ) | ForEach-Object { dism.exe /online /norestart /add-package:"$_" }
         }
         Write-Host "================================="
-        Write-Host "--     Tweaks are Finished    ---"
+        Write-Host "---    Tweaks are Finished    ---"
+        Write-Host "---       Please Restart      ---" 
         Write-Host "================================="
         
         $ButtonType = [System.Windows.MessageBoxButton]::OK
-        $MessageboxTitle = "Tweaks are Finished "
-        $Messageboxbody = ("Done")
+        $MessageboxTitle = $AppTitle
+        $Messageboxbody = ("Tweaks are Finished. Please Restart.")
         $MessageIcon = [System.Windows.MessageBoxImage]::Information
 
         [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
     })
+
+
 #===========================================================================
 # Undo All
 #===========================================================================
@@ -1306,14 +1309,15 @@ $WPFundoall.Add_Click({
         Write-Host "Essential Undo Completed"
 
         $ButtonType = [System.Windows.MessageBoxButton]::OK
-        $MessageboxTitle = "Undo All"
-        $Messageboxbody = ("Done")
+        $MessageboxTitle = $AppTitle
+        $Messageboxbody = ("All Tweaks are reverted to stock settings. Please Restart.")
         $MessageIcon = [System.Windows.MessageBoxImage]::Information
 
         [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
 
         Write-Host "================================="
         Write-Host "---   Undo All is Finished    ---"
+        Write-Host "---      Please Restart       ---"
         Write-Host "================================="
     })
 #===========================================================================
