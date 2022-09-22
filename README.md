@@ -42,6 +42,9 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
+### `1.1`
+
+> - **Added Bitsum Optimized Power Plan**
 
 ### `1.1`
 
@@ -50,7 +53,6 @@ If you have any issues with the script please submit them to Issues tab here on 
 > - **Fixed GameDVR tweaks**
 > 
 > - **Disabled Gamebar Presence Writer to stop stuttering in games**
-
 
 ### `1.0`
 
@@ -69,5 +71,4 @@ If you have any issues with the script please submit them to Issues tab here on 
 >   
 > - **Added driver installer to Config**
 >   - Snappy Driver Installer Origin
-
 
