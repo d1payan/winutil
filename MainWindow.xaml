@@ -161,6 +161,7 @@
 							<Label FontSize="16" Content="Essential Tweaks"/>
 							<CheckBox Name="EssTweaksRP" Content="Create Restore Point" Margin="5,0"/>
 							<CheckBox Name="EssTweaksOO" Content="Run O and O Shutup" Margin="5,0"/>
+							<CheckBox Name="EssTweaksGO" Content="General Optimizations" Margin="5,0"/>
 							<CheckBox Name="EssTweaksTele" Content="Disable Telemetry" Margin="5,0"/>
 							<CheckBox Name="EssTweaksWifi" Content="Disable Wifi-Sense" Margin="5,0"/>
 							<CheckBox Name="EssTweaksAH" Content="Disable Activity History" Margin="5,0"/>
