@@ -251,6 +251,9 @@
     },
     "Installvalorant": {
       "winget": "RiotGames.Valorant.AP"
+    },
+    "Installtwinkletray": {
+      "winget": "xanderfrangos.twinkletray"
     }
   }
 }

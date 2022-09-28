@@ -434,6 +434,10 @@ $WPFinstall.Add_Click({
             $wingetinstall.Add("RiotGames.Valorant.AP")
             $WPFInstallvalorant.IsChecked = $false
         }
+        If ( $WPFInstalltwinkletray.IsChecked -eq $true ) {
+            $wingetinstall.Add("xanderfrangos.twinkletray")
+            $WPFInstalltwinkletray.IsChecked = $false
+        }
 
         # Check if winget is installed
         Write-Host "Checking if Winget is Installed..."
@@ -559,6 +563,7 @@ $WPFInstallUpgrade.Add_Click({
 $WPFdesktop.Add_Click({
 
         $WPFEssTweaksAH.IsChecked = $true
+        $WPFEssTweaksDeleteTempFiles.IsChecked = $true
         $WPFEssTweaksDeBloat.IsChecked = $false
         $WPFEssTweaksDVR.IsChecked = $true
         $WPFEssTweaksHiber.IsChecked = $true
@@ -584,6 +589,7 @@ $WPFdesktop.Add_Click({
 $WPFlaptop.Add_Click({
 
         $WPFEssTweaksAH.IsChecked = $true
+        $WPFEssTweaksDeleteTempFiles.IsChecked = $true
         $WPFEssTweaksDeBloat.IsChecked = $false
         $WPFEssTweaksDVR.IsChecked = $true
         $WPFEssTweaksHiber.IsChecked = $false
@@ -609,6 +615,7 @@ $WPFlaptop.Add_Click({
 $WPFminimal.Add_Click({
     
         $WPFEssTweaksAH.IsChecked = $false
+        $WPFEssTweaksDeleteTempFiles.IsChecked = $true
         $WPFEssTweaksDeBloat.IsChecked = $false
         $WPFEssTweaksDVR.IsChecked = $false
         $WPFEssTweaksHiber.IsChecked = $false
@@ -647,6 +654,14 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Type DWord -Value 0
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type DWord -Value 0
             $WPFEssTweaksAH.IsChecked = $false
+        }
+
+        If ( $WPFEssTweaksDeleteTempFiles.IsChecked -eq $true ) {
+            Write-Host "Delete Temp Files"
+            Get-ChildItem -Path "$env:windir\Temp" *.* -Recurse | Remove-Item -Force -Recurse
+            Get-ChildItem -Path $env:TEMP *.* -Recurse | Remove-Item -Force -Recurse
+            Get-ChildItem -Path "$env:windir\Prefetch" *.* -Recurse | Remove-Item -Force -Recurse
+            $WPFEssTweaksDeleteTempFiles.IsChecked = $false
         }
 
         If ( $WPFEssTweaksDVR.IsChecked -eq $true ) {
@@ -736,7 +751,7 @@ $WPFtweaksbutton.Add_Click({
                 "DPS"                                          # Diagnostic Policy Service (Detects and Troubleshoots Potential Problems)
                 "edgeupdate"                                   # Edge Update Service
                 "edgeupdatem"                                  # Another Update Service
-                #"EntAppSvc"                                    # Enterprise Application Management.
+                #"EntAppSvc"                                   # Enterprise Application Management.
                 "Fax"                                          # Fax Service
                 "fhsvc"                                        # Fax History
                 "FontCache"                                    # Windows font cache
@@ -750,7 +765,8 @@ $WPFtweaksbutton.Add_Click({
                 "MapsBroker"                                   # Downloaded Maps Manager
                 "MicrosoftEdgeElevationService"                # Another Edge Update Service
                 "MSDTC"                                        # Distributed Transaction Coordinator
-                #"ndu"                                          # Windows Network Data Usage Monitor (Disabling Breaks Task Manager Per-Process Network Monitoring)
+                "NahimicService"                               # Nahimic Service
+                #"ndu"                                         # Windows Network Data Usage Monitor (Disabling Breaks Task Manager Per-Process Network Monitoring)
                 "NetTcpPortSharing"                            # Net.Tcp Port Sharing Service
                 "PcaSvc"                                       # Program Compatibility Assistant Service
                 "PerfHost"                                     # Remote users and 64-bit processes to query performance.
