@@ -135,6 +135,7 @@
 							<CheckBox Name="Installtreesize" Content="TreeSize Free" Margin="5,0"/>
 							<CheckBox Name="Installwindirstat" Content="WinDirStat" Margin="5,0"/>
 							<CheckBox Name="Installterminal" Content="Windows Terminal" Margin="5,0"/>
+							<CheckBox Name="Installtwinkletray" Content="Twinkle Tray" Margin="5,0"/>
 							<Button Name="install" Background="AliceBlue" Content="Start Install" Margin="20,5,20,5" ToolTip="Install all checked programs"/>
 							<Button Name="InstallUpgrade" Background="AliceBlue" Content="Upgrade Installs" Margin="20,5,20,5" ToolTip="Upgrade All Existing Programs on System"/>
 
@@ -165,6 +166,7 @@
 							<CheckBox Name="EssTweaksTele" Content="Disable Telemetry" Margin="5,0"/>
 							<CheckBox Name="EssTweaksWifi" Content="Disable Wifi-Sense" Margin="5,0"/>
 							<CheckBox Name="EssTweaksAH" Content="Disable Activity History" Margin="5,0"/>
+							<CheckBox Name="EssTweaksDeleteTempFiles" Content="Delete Temporary Files" Margin="5,0"/>
 							<CheckBox Name="EssTweaksLoc" Content="Disable Location Tracking" Margin="5,0"/>
 							<CheckBox Name="EssTweaksHome" Content="Disable Homegroup" Margin="5,0"/>
 							<CheckBox Name="EssTweaksStorage" Content="Disable Storage Sense" Margin="5,0"/>
