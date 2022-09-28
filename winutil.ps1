@@ -634,7 +634,7 @@ $WPFminimal.Add_Click({
 $WPFtweaksbutton.Add_Click({
 
         If ( $WPFEssTweaksDVR.IsChecked -eq $true ) {
-            #Installing PowerRun to run some restricted registry keys
+            #Installing PowerRun to edit some restricted registry keys
             curl.exe -s "https://www.sordum.org/files/download/power-run/PowerRun.zip" -o ".\PowerRun.zip"
             Expand-Archive -Path ".\PowerRun.zip" -DestinationPath ".\" -Force
             Copy-Item -Path ".\PowerRun\PowerRun.exe" -Destination "C:\Windows\" -Force
@@ -1365,6 +1365,8 @@ $WPFundoall.Add_Click({
         Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowClipboardHistory" -ErrorAction SilentlyContinue
         Write-Host "Done - Reverted to Stock Settings"
 
+        #Enable Gamebar Presence Writer
+        PowerRun.exe /SW:0 Powershell.exe -command {Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Gaming.GameBar.PresenceServer.Internal.PresenceWriter" -Name "ActivationType" -Type DWord -Value 1}
         Write-Host "Essential Undo Completed"
 
         $ButtonType = [System.Windows.MessageBoxButton]::OK
