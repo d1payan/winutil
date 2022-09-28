@@ -42,11 +42,17 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
+### `1.4`
+
+> - **Added option to delete temp files**
+>
+> - **Added TwinkleTray program to Installer**
+
 ### `1.3`
 
 > - **Added General Optimization Tweaks**
 >
-> - **Some Visual Changes**
+> - **Some visual changes**
 
 ### `1.2`
 
