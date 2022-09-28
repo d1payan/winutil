@@ -42,7 +42,11 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
-### `1.1`
+### `1.3`
+
+> - **Added General Optimization Tweaks*
+
+### `1.2`
 
 > - **Added Bitsum Optimized Power Plan**
 >
