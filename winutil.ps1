@@ -506,7 +506,7 @@ $WPFinstall.Add_Click({
                 Write-Error $_.Exception
             }
             # Creating Shortcut For Autoruns
-            if( $node -eq "Microsoft.Sysinternals.Autoruns" ) {
+            if ( $node -eq "Microsoft.Sysinternals.Autoruns" ) {
                 $WshShell = New-Object -comObject WScript.Shell
                 $Shortcut = $WshShell.CreateShortcut("$env:USERPROFILE\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Autoruns.lnk")
                 $Shortcut.TargetPath = "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Packages\Microsoft.Sysinternals.Autoruns_Microsoft.Winget.Source_8wekyb3d8bbwe\autoruns.exe"
@@ -547,7 +547,7 @@ $WPFInstallUpgrade.Add_Click({
             Write-Error $_.Exception
         }
         $ButtonType = [System.Windows.MessageBoxButton]::OK
-        $Messageboxbody = if($isUpgradeSuccess) {"Upgrade Done"} else {"Upgrade was not succesful"}
+        $Messageboxbody = if ($isUpgradeSuccess) { "Upgrade Done" } else { "Upgrade was not succesful" }
         $MessageIcon = [System.Windows.MessageBoxImage]::Information
 
         [System.Windows.MessageBox]::Show($Messageboxbody, $AppTitle, $ButtonType, $MessageIcon)
@@ -662,7 +662,7 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Type DWord -Value 1
 
             #Disabling Gamebar Presence Writer, which causes stutter in games
-            PowerRun.exe /SW:0 Powershell.exe -command {Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Gaming.GameBar.PresenceServer.Internal.PresenceWriter" -Name "ActivationType" -Type DWord -Value 0}
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Gaming.GameBar.PresenceServer.Internal.PresenceWriter" -Name "ActivationType" -Type DWord -Value 0 }
 
             $WPFEssTweaksDVR.IsChecked = $false
         }
@@ -820,7 +820,7 @@ $WPFtweaksbutton.Add_Click({
             $WPFEssTweaksStorage.IsChecked = $false
         }
 
-        If( $WPFEssTweaksGO.IsChecked -eq $true ) {
+        If ( $WPFEssTweaksGO.IsChecked -eq $true ) {
             # Task Manager Details
             If ((get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name CurrentBuild).CurrentBuild -lt 22557) {
                 Write-Host "Showing task manager details..."
@@ -849,17 +849,15 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -Name "PeopleBand" -Type DWord -Value 0
 
             Write-Host "Changing default Explorer view to This PC..."
-            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type DWord -Value 1
-    
-            Write-Host "Hiding 3D Objects icon from This PC..."
-            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -Recurse -ErrorAction SilentlyContinue  
+            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type DWord -Value 1 
         
-            Write-Host "Disable Transparency..."
+            Write-Host "Disabling Transparency..."
             Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "EnableTransparency" -Type DWord -Value 0
-            Write-Host "Increase wallpaper quality..."
+            Write-Host "Increasing wallpaper quality..."
             Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "JPEGImportQuality" -Type DWord -Value 100
 
-            ## Performance Tweaks
+            # Performance Tweaks
+            Write-Host "Applying Performance Tweaks..."
             #Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" -Name "SearchOrderConfig" -Type DWord -Value 0
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "SystemResponsiveness" -Type DWord -Value 4294967295
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "GPU Priority" -Type DWord -Value 8
@@ -867,6 +865,7 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "Scheduling Category" -Type String -Value "High"
 
             # Turn on hardware accelerated gpu scheduling
+            Write-Host "Enabling HAGS Features for Supported GPUs..."
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "HwSchMode" -Type DWord -Value 2
 
             # Battery options optimize for video quality
@@ -887,13 +886,9 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseHoverTime" -Type DWord -Value 10
 
             # Network Tweaks
+            Write-Host "Applying Network Tweaks..."
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "IRPStackSize" -Type DWord -Value 20
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NetworkThrottlingIndex" -Type DWord -Value 0
-
-            # Search
-            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "SafeSearchMode" -Type DWord -Value 0
-            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsAADCloudSearchEnabled" -Type DWord -Value 0
-            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsMSACloudSearchEnabled" -Type DWord -Value 0
 
             # Disable automatic maintenance
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" -Name "MaintenanceDisabled" -Type DWord -Value 1
@@ -902,22 +897,65 @@ $WPFtweaksbutton.Add_Click({
             $ram = (Get-CimInstance -ClassName Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1kb
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "SvcHostSplitThresholdInKB" -Type DWord -Value $ram -Force
 
-            Write-Host "Disable News and Interests"
-            If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds")) {
-                New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" | Out-Null
-            }
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -Type DWord -Value 0
-            # Remove "News and Interest" from taskbar
-            Set-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
+            # Cleanup File Explorer
+            Write-Host "Cleaning up File Explorer..."
+            # Remove 3D Objects From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -Recurse -ErrorAction SilentlyContinue 
+            # Remove Desktop From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" -Recurse -ErrorAction SilentlyContinue 
+            # Remove Documents From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}" -Recurse -ErrorAction SilentlyContinue 
+            # Remove Downloads From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{374DE290-123F-4565-9164-39C4925E467B}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{374DE290-123F-4565-9164-39C4925E467B}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}" -Recurse -ErrorAction SilentlyContinue 
+            # Remove Music From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" -Recurse -ErrorAction SilentlyContinue 
+            # Remove Pictures From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" -Recurse -ErrorAction SilentlyContinue 
+            # Remove Videos From This PC
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Recurse -ErrorAction SilentlyContinue 
+            Remove-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Recurse -ErrorAction SilentlyContinue 
+            
+            Write-Host "Hide frequent folders in quick access..."
+            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Type DWord -Value 0
+            Write-Host "Disable Search histroy..."
+            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsDeviceSearchHistoryEnabled" -Type DWord -Value 0
+            Write-Host "Disabling shortcut text..."
+            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "link" -Type Binary -Value 00,00,00,00
 
-            # remove "Meet Now" button from taskbar
+            # Mouse
+            Write-Host "Turning off enhance pointer precision..."
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Type String -Value "0"
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Type String -Value "0"
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Type String -Value "0"
 
-            If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
-                New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
-            }
+            # Autoruns
+            Remove-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Force
+            Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Force
+            New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Force
+            New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Force
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "ctfmon" -Type String -Value "C:\\Windows\\System32\\ctfmon.exe"
 
-            Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "HideSCAMeetNow" -Type DWord -Value 1
+            # Store
+            Write-Host "Disabling AutoUpdate in MS Store..."
+            New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Force
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2
 
+            
         }
 
         If ( $WPFEssTweaksTele.IsChecked -eq $true ) {
@@ -1042,7 +1080,7 @@ $WPFtweaksbutton.Add_Click({
             $WPFTimerResolutionLaptop.IsChecked = $false
         }
 
-        If( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {
+        If ( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {
             Write-Host "Activating Bitsum Optimized Power Plan..."
             curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
             powercfg -import ".\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
@@ -1202,11 +1240,12 @@ $WPFtweaksbutton.Add_Click({
             $WPFEssTweaksDeBloat.IsChecked = $false
         }
         Write-Host "Doing Security checks for Administrator Account and Group Policy"
-        if(($(Get-WMIObject -class Win32_ComputerSystem | select username).username).IndexOf('Administrator') -eq -1){
+        if (($(Get-WMIObject -class Win32_ComputerSystem | select username).username).IndexOf('Administrator') -eq -1) {
             net user administrator /active:no
         }
     
-        if(!(((Get-ComputerInfo).WindowsEditionId).IndexOf('Core') -eq -1) -or !(((Get-ComputerInfo).WindowsEditionId).IndexOf('Home') -eq -1)){ # Not sure if home edition is Core or Home
+        if (!(((Get-ComputerInfo).WindowsEditionId).IndexOf('Core') -eq -1) -or !(((Get-ComputerInfo).WindowsEditionId).IndexOf('Home') -eq -1)) {
+            # Not sure if home edition is Core or Home
             Write-Host "Enabling gpedit.msc...Group Policy for Home Users"
             Get-ChildItem @(
                 "$env:SystemDrive\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package*.mum",
@@ -1366,7 +1405,40 @@ $WPFundoall.Add_Click({
         Write-Host "Done - Reverted to Stock Settings"
 
         #Enable Gamebar Presence Writer
-        PowerRun.exe /SW:0 Powershell.exe -command {Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Gaming.GameBar.PresenceServer.Internal.PresenceWriter" -Name "ActivationType" -Type DWord -Value 1}
+        PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Gaming.GameBar.PresenceServer.Internal.PresenceWriter" -Name "ActivationType" -Type DWord -Value 1 }
+        
+        # Restore 3D Objects to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -Force 
+        # Restore Desktop to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" -Force 
+        # Restore Documents to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}" -Force 
+        # Restore Downloads to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{374DE290-123F-4565-9164-39C4925E467B}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{374DE290-123F-4565-9164-39C4925E467B}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}" -Force 
+        # Restore Music to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" -Force 
+        # Restore Pictures to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" -Force 
+        # Restore Videos to This PC
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Force 
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Force
+        New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Force
+        
+        
         Write-Host "Essential Undo Completed"
 
         $ButtonType = [System.Windows.MessageBoxButton]::OK
@@ -1386,63 +1458,63 @@ $WPFundoall.Add_Click({
 #===========================================================================
 $WPFRedistInstall.Add_Click({
 
-    If(($WPFvisualcpp.IsChecked -eq $false) -and ($WPFdirectx.IsChecked -eq $false)) {
-        $WarningMsg = "Please select a package(s) to install"
-        [System.Windows.MessageBox]::Show($WarningMsg, $AppTitle, [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
-        return
-    }
+        If (($WPFvisualcpp.IsChecked -eq $false) -and ($WPFdirectx.IsChecked -eq $false)) {
+            $WarningMsg = "Please select a package(s) to install"
+            [System.Windows.MessageBox]::Show($WarningMsg, $AppTitle, [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
+            return
+        }
 
-    If( $WPFvisualcpp.IsChecked -eq $true ) {
-        # Source: https://github.com/abbodi1406/vcredist
-        Import-Module BitsTransfer
-        Start-BitsTransfer -Source "https://kutt.it/vcppredist" -Destination "./VisualCppRedist.zip"
-        Expand-Archive -Path "./VisualCppRedist.zip" -DestinationPath "./"
-        & "./VisualCppRedist_AIO_x86_x64.exe" /ai | Out-Host
-        $WPFvisualcpp.IsChecked = $false
-        Remove-Item "./VisualCppRedist.zip", "./VisualCppRedist_AIO_x86_x64.exe"
-    }
-    If ( $WPFdirectx.IsChecked -eq $true ) {
-        # Source: https://www.guru3d.com/files-details/directx-end-user-runtimes-(june-2010).html
-        Import-Module BitsTransfer
-        Start-BitsTransfer -Source "https://ftp.nluug.nl/pub/games/PC/guru3d/generic/directx_Jun2010_redist-[Guru3D.com].zip" -Destination "./directx.zip"
-        Expand-Archive -Path "./directx.zip" -DestinationPath "./directx" -Force
-        & "./directx\DXSETUP.exe" /silent | Out-Host
-        $WPFdirectx.IsChecked = $false
-        Remove-Item "./directx.zip", "./directx" -Recurse
-    }
-    $ButtonType = [System.Windows.MessageBoxButton]::OK
-    $MessageboxTitle = "Package(s) Installed Successfully"
-    $Messageboxbody = ("Done")
-    $MessageIcon = [System.Windows.MessageBoxImage]::Information
+        If ( $WPFvisualcpp.IsChecked -eq $true ) {
+            # Source: https://github.com/abbodi1406/vcredist
+            Import-Module BitsTransfer
+            Start-BitsTransfer -Source "https://kutt.it/vcppredist" -Destination "./VisualCppRedist.zip"
+            Expand-Archive -Path "./VisualCppRedist.zip" -DestinationPath "./"
+            & "./VisualCppRedist_AIO_x86_x64.exe" /ai | Out-Host
+            $WPFvisualcpp.IsChecked = $false
+            Remove-Item "./VisualCppRedist.zip", "./VisualCppRedist_AIO_x86_x64.exe"
+        }
+        If ( $WPFdirectx.IsChecked -eq $true ) {
+            # Source: https://www.guru3d.com/files-details/directx-end-user-runtimes-(june-2010).html
+            Import-Module BitsTransfer
+            Start-BitsTransfer -Source "https://ftp.nluug.nl/pub/games/PC/guru3d/generic/directx_Jun2010_redist-[Guru3D.com].zip" -Destination "./directx.zip"
+            Expand-Archive -Path "./directx.zip" -DestinationPath "./directx" -Force
+            & "./directx\DXSETUP.exe" /silent | Out-Host
+            $WPFdirectx.IsChecked = $false
+            Remove-Item "./directx.zip", "./directx" -Recurse
+        }
+        $ButtonType = [System.Windows.MessageBoxButton]::OK
+        $MessageboxTitle = "Package(s) Installed Successfully"
+        $Messageboxbody = ("Done")
+        $MessageIcon = [System.Windows.MessageBoxImage]::Information
 
-    [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
+        [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
 
-    Write-Host "========================================="
-    Write-Host "---  Redistributables are Installed   ---"
-    Write-Host "========================================="
-})
+        Write-Host "========================================="
+        Write-Host "---  Redistributables are Installed   ---"
+        Write-Host "========================================="
+    })
 
 $WPFSdioInstall.Add_Click({
-    Import-Module BitsTransfer
-    Start-BitsTransfer -Source "https://www.glenn.delahoy.com/downloads/sdio/SDIO_1.12.8.748.zip" -Destination "./SDIO.zip"
-    Expand-Archive -Path "./SDIO.zip" -DestinationPath "C:\Program Files" -Force
-    Remove-Item -Path "./SDIO.zip"
-    $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut("$env:USERPROFILE\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Snappy Driver Installer Origin.lnk")
-    $Shortcut.TargetPath = "C:\Program Files\SDIO_1.12.8.748\SDIO_x64_R748.exe"
-    $Shortcut.Save()
+        Import-Module BitsTransfer
+        Start-BitsTransfer -Source "https://www.glenn.delahoy.com/downloads/sdio/SDIO_1.12.8.748.zip" -Destination "./SDIO.zip"
+        Expand-Archive -Path "./SDIO.zip" -DestinationPath "C:\Program Files" -Force
+        Remove-Item -Path "./SDIO.zip"
+        $WshShell = New-Object -comObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut("$env:USERPROFILE\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Snappy Driver Installer Origin.lnk")
+        $Shortcut.TargetPath = "C:\Program Files\SDIO_1.12.8.748\SDIO_x64_R748.exe"
+        $Shortcut.Save()
 
-    $ButtonType = [System.Windows.MessageBoxButton]::OK
-    $MessageboxTitle = "Completed"
-    $Messageboxbody = ("Successfully Installed SDIO")
-    $MessageIcon = [System.Windows.MessageBoxImage]::Information
+        $ButtonType = [System.Windows.MessageBoxButton]::OK
+        $MessageboxTitle = "Completed"
+        $Messageboxbody = ("Successfully Installed SDIO")
+        $MessageIcon = [System.Windows.MessageBoxImage]::Information
 
-    [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
+        [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
 
-    Write-Host "======================================"
-    Write-Host "---  SDIO Installed Successfully   ---"
-    Write-Host "======================================"
-})
+        Write-Host "======================================"
+        Write-Host "---  SDIO Installed Successfully   ---"
+        Write-Host "======================================"
+    })
 
 $WPFFeatureInstall.Add_Click({
 
@@ -1671,31 +1743,31 @@ $WPFFixesUpdate.Add_Click({
     })
 
 $WPFUpdatesdisable.Add_Click({
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU")) {
-        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force | Out-Null
-    }
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 1
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Type DWord -Value 1
-    If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config")) {
-        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Force | Out-Null
-    }
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 0
+        If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU")) {
+            New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force | Out-Null
+        }
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 1
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Type DWord -Value 1
+        If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config")) {
+            New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Force | Out-Null
+        }
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 0
     
-    $services = @(
-        "BITS"
-        "wuauserv"
-    )
+        $services = @(
+            "BITS"
+            "wuauserv"
+        )
 
-    foreach ($service in $services) {
-        # -ErrorAction SilentlyContinue is so it doesn't write an error to stdout if a service doesn't exist
+        foreach ($service in $services) {
+            # -ErrorAction SilentlyContinue is so it doesn't write an error to stdout if a service doesn't exist
 
-        Write-Host "Setting $service StartupType to Disabled"
-        Get-Service -Name $service -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
-    }
-    Write-Host "================================="
-    Write-Host "---  Updates ARE DISABLED     ---"
-    Write-Host "================================="
-})
+            Write-Host "Setting $service StartupType to Disabled"
+            Get-Service -Name $service -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
+        }
+        Write-Host "================================="
+        Write-Host "---  Updates ARE DISABLED     ---"
+        Write-Host "================================="
+    })
 $WPFUpdatessecurity.Add_Click({
         Write-Host "Disabling driver offering through Windows Update..."
         If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata")) {
