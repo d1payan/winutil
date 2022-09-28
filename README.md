@@ -45,6 +45,8 @@ If you have any issues with the script please submit them to Issues tab here on 
 ### `1.3`
 
 > - **Added General Optimization Tweaks**
+>
+> - **Some Visual Changes**
 
 ### `1.2`
 
