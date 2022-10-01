@@ -45,6 +45,8 @@ If you have any issues with the script please submit them to Issues tab here on 
 ### `1.5`
 
 > - **Added option to disable defender**
+>
+> - **Added Nvidia Optimized Settings**
 
 ### `1.4`
 
