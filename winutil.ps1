@@ -586,6 +586,7 @@ $WPFdesktop.Add_Click({
         $WPFEssTweaksGO.IsChecked = $true
         $WPFMiscTweaksDisableDefender.IsChecked = $false
         $WPFMiscTweaksEnableDefender.IsChecked = $false
+        $WPFMiscTweaksNvidia.IsChecked = $false
     })
 
 $WPFlaptop.Add_Click({
@@ -614,6 +615,7 @@ $WPFlaptop.Add_Click({
         $WPFEssTweaksGO.IsChecked = $true
         $WPFMiscTweaksDisableDefender.IsChecked = $false
         $WPFMiscTweaksEnableDefender.IsChecked = $false
+        $WPFMiscTweaksNvidia.IsChecked = $false
     })
 
 $WPFminimal.Add_Click({
@@ -642,6 +644,7 @@ $WPFminimal.Add_Click({
         $WPFEssTweaksGO.IsChecked = $true
         $WPFMiscTweaksDisableDefender.IsChecked = $false 
         $WPFMiscTweaksEnableDefender.IsChecked = $false
+        $WPFMiscTweaksNvidia.IsChecked = $false
     })
 
 $WPFtweaksbutton.Add_Click({
@@ -1164,6 +1167,15 @@ $WPFtweaksbutton.Add_Click({
             PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableNotifications" }
 
             $WPFMiscTweaksEnableDefender.IsChecked = $false
+        }
+
+        If ( $WPFMiscTweaksNvidia.IsChecked -eq $true ) {
+            Write-Host "Import Nvidia Settings..."
+            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_NvidiaProfileInspector.exe" -o "$env:windir\_NvidiaProfileInspector.exe"
+            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_NvidiaBaseProfile.nip" -o "$env:windir\_NvidiaBaseProfile.nip"
+            _nvidiaProfileInspector.exe "$env:windir\_NvidiaBaseProfile.nip" -silent
+
+            $WPFMiscTweaksNvidia.IsChecked = $false
         }
 
         If ( $WPFMiscTweaksLapNum.IsChecked -eq $true ) {
