@@ -42,6 +42,10 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
+### `1.5`
+
+> - **Added option to disable defender**
+
 ### `1.4`
 
 > - **Added option to delete temp files**
