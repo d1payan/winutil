@@ -584,6 +584,8 @@ $WPFdesktop.Add_Click({
         $WPFTimerResolutionDesktop.IsChecked = $true
         $WPFTimerResolutionLaptop.IsChecked = $false
         $WPFEssTweaksGO.IsChecked = $true
+        $WPFMiscTweaksDisableDefender.IsChecked = $false
+        $WPFMiscTweaksEnableDefender.IsChecked = $false
     })
 
 $WPFlaptop.Add_Click({
@@ -610,6 +612,8 @@ $WPFlaptop.Add_Click({
         $WPFTimerResolutionDesktop.IsChecked = $false
         $WPFTimerResolutionLaptop.IsChecked = $true
         $WPFEssTweaksGO.IsChecked = $true
+        $WPFMiscTweaksDisableDefender.IsChecked = $false
+        $WPFMiscTweaksEnableDefender.IsChecked = $false
     })
 
 $WPFminimal.Add_Click({
@@ -636,15 +640,17 @@ $WPFminimal.Add_Click({
         $WPFTimerResolutionDesktop.IsChecked = $false
         $WPFTimerResolutionLaptop.IsChecked = $false
         $WPFEssTweaksGO.IsChecked = $true
+        $WPFMiscTweaksDisableDefender.IsChecked = $false 
+        $WPFMiscTweaksEnableDefender.IsChecked = $false
     })
 
 $WPFtweaksbutton.Add_Click({
 
-        If ( $WPFEssTweaksDVR.IsChecked -eq $true ) {
+        If (($WPFEssTweaksDVR.IsChecked -eq $true) -or ($WPFMiscTweaksDisableDefender.IsChecked -eq $true)) {
             #Installing PowerRun to edit some restricted registry keys
             curl.exe -s "https://www.sordum.org/files/download/power-run/PowerRun.zip" -o ".\PowerRun.zip"
             Expand-Archive -Path ".\PowerRun.zip" -DestinationPath ".\" -Force
-            Copy-Item -Path ".\PowerRun\PowerRun.exe" -Destination "C:\Windows\" -Force
+            Copy-Item -Path ".\PowerRun\PowerRun.exe" -Destination "$env:windir" -Force
             Remove-Item -Path ".\PowerRun\", ".\PowerRun.zip" -Recurse
         }
 
@@ -1104,6 +1110,60 @@ $WPFtweaksbutton.Add_Click({
             curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
             powercfg -import ".\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
             powercfg -SETACTIVE 77777777-7777-7777-7777-777777777777
+        }
+
+        If ( $WPFMiscTweaksDisableDefender.IsChecked -eq $true ) {
+            Write-Host "Disabling Defender..."
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdBoot" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdFilter" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SecurityHealthService" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdNisDrv" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mssecflt" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdNisSvc" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense" -Name "Start" -Type DWord -Value 4 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\wscsvc" -Name "Start" -Type DWord -Value 4 }
+
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableAntiSpyware" -Type DWord -Value 1 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableRoutinelyTakingAction" -Type DWord -Value 1 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "ServiceKeepAlive" -Type DWord -Value 0 }
+
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableBehaviorMonitoring" -Type DWord -Value 1 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableIOAVProtection" -Type DWord -Value 1 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableOnAccessProtection" -Type DWord -Value 1 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" -Type DWord -Value 1 }
+
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" -Name "DisableEnhancedNotifications" -Type DWord -Value 1 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableNotifications" -Type DWord -Value 1 }
+
+            $WPFMiscTweaksDisableDefender.IsChecked = $false
+        }
+
+        If ( $WPFMiscTweaksEnableDefender.IsChecked -eq $true ) {
+            Write-Host "Enabling Defender..."
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdBoot" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdFilter" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SecurityHealthService" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdNisDrv" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mssecflt" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WdNisSvc" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense" -Name "Start" -Type DWord -Value 2 }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\wscsvc" -Name "Start" -Type DWord -Value 2 }
+
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableAntiSpyware" }
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableRoutinelyTakingAction" }
+            PowerRun.exe /SW:0 Powershell.exe -command { Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "ServiceKeepAlive" }
+
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableBehaviorMonitoring" }
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableIOAVProtection" }
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableOnAccessProtection" }
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" }
+
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" -Name "DisableEnhancedNotifications" }
+            PowerRun.exe /SW:0 Powershell.exe -command { Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableNotifications" }
+
+            $WPFMiscTweaksEnableDefender.IsChecked = $false
         }
 
         If ( $WPFMiscTweaksLapNum.IsChecked -eq $true ) {
