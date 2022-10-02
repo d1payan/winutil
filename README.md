@@ -42,43 +42,43 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
-> - **Added option to restore old context menu on Windows 11**
->
-> - **Added option to disable defender**
->
-> - **Added Nvidia Optimized Settings**
->
-> - **Added option to delete temp files**
->
-> - **Added TwinkleTray program to Installer**
->
-> - **Added General Optimization Tweaks**
->
-> - **Some visual changes**
->
-> - **Added Bitsum Optimized Power Plan**
->
-> - **Added Timer Resolution Tweaks**
->
-> - **Modified ooshutup10.cfg**
-> 
-> - **Fixed GameDVR tweaks**
-> 
-> - **Disabled Gamebar Presence Writer to stop stuttering in games**
->
-> - **Added new programs to Installer**
->   - WhatsApp
->   - Telegram
->   - TeamSpeak
->   - Ubisoft Connect
->   - Origin
->   - Valorant
->   - Autoruns
->   
-> - **Added redistributable packages to Config**
->   - Visual C++
->   - DirectX
->   
-> - **Added driver installer to Config**
->   - Snappy Driver Installer Origin
+- **Added option to restore old context menu on Windows 11**
+
+- **Added option to disable defender**
+
+- **Added Nvidia Optimized Settings**
+
+- **Added option to delete temp files**
+
+- **Added TwinkleTray program to Installer**
+
+- **Added General Optimization Tweaks**
+
+- **Some visual changes**
+
+- **Added Bitsum Optimized Power Plan**
+
+- **Added Timer Resolution Tweaks**
+
+- **Modified ooshutup10.cfg**
+
+- **Fixed GameDVR tweaks**
+
+- **Disabled Gamebar Presence Writer to stop stuttering in games**
+
+- **Added new programs to Installer**
+  - WhatsApp
+  - Telegram
+  - TeamSpeak
+  - Ubisoft Connect
+  - Origin
+  - Valorant
+  - Autoruns
+  
+- **Added redistributable packages to Config**
+  - Visual C++
+  - DirectX
+   
+- **Added driver installer to Config**
+  - Snappy Driver Installer Origin
 
