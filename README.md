@@ -42,40 +42,30 @@ If you have any issues with the script please submit them to Issues tab here on 
 
 ## Changelog
 
-### `1.5`
-
+> - **Added option to restore old context menu on Windows 11**
+>
 > - **Added option to disable defender**
 >
 > - **Added Nvidia Optimized Settings**
-
-### `1.4`
-
+>
 > - **Added option to delete temp files**
 >
 > - **Added TwinkleTray program to Installer**
-
-### `1.3`
-
+>
 > - **Added General Optimization Tweaks**
 >
 > - **Some visual changes**
-
-### `1.2`
-
+>
 > - **Added Bitsum Optimized Power Plan**
 >
 > - **Added Timer Resolution Tweaks**
-
-### `1.1`
-
+>
 > - **Modified ooshutup10.cfg**
 > 
 > - **Fixed GameDVR tweaks**
 > 
 > - **Disabled Gamebar Presence Writer to stop stuttering in games**
-
-### `1.0`
-
+>
 > - **Added new programs to Installer**
 >   - WhatsApp
 >   - Telegram
