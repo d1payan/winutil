@@ -587,6 +587,7 @@ $WPFdesktop.Add_Click({
         $WPFMiscTweaksDisableDefender.IsChecked = $false
         $WPFMiscTweaksEnableDefender.IsChecked = $false
         $WPFMiscTweaksNvidia.IsChecked = $false
+        $WPFMiscTweaksContextWin11.IsChecked = $false
     })
 
 $WPFlaptop.Add_Click({
@@ -616,6 +617,7 @@ $WPFlaptop.Add_Click({
         $WPFMiscTweaksDisableDefender.IsChecked = $false
         $WPFMiscTweaksEnableDefender.IsChecked = $false
         $WPFMiscTweaksNvidia.IsChecked = $false
+        $WPFMiscTweaksContextWin11.IsChecked = $false
     })
 
 $WPFminimal.Add_Click({
@@ -645,6 +647,7 @@ $WPFminimal.Add_Click({
         $WPFMiscTweaksDisableDefender.IsChecked = $false 
         $WPFMiscTweaksEnableDefender.IsChecked = $false
         $WPFMiscTweaksNvidia.IsChecked = $false
+        $WPFMiscTweaksContextWin11.IsChecked = $false
     })
 
 $WPFtweaksbutton.Add_Click({
@@ -757,9 +760,9 @@ $WPFtweaksbutton.Add_Click({
                 "CaptureService_48486de"                       # Optional screen capture functionality for applications that call the Windows.Graphics.Capture API.
                 "cbdhsvc_48486de"                              # Clipboard Service
                 "diagnosticshub.standardcollector.service"     # Microsoft (R) Diagnostics Hub Standard Collector Service
-                "DiagTrack"                                    # Diagnostics Tracking Service
+                #"DiagTrack"                                   # Diagnostics Tracking Service
                 "dmwappushservice"                             # WAP Push Message Routing Service
-                "DPS"                                          # Diagnostic Policy Service (Detects and Troubleshoots Potential Problems)
+                #"DPS"                                         # Diagnostic Policy Service (Detects and Troubleshoots Potential Problems)
                 "edgeupdate"                                   # Edge Update Service
                 "edgeupdatem"                                  # Another Update Service
                 #"EntAppSvc"                                   # Enterprise Application Management.
@@ -767,10 +770,11 @@ $WPFtweaksbutton.Add_Click({
                 "fhsvc"                                        # Fax History
                 "FontCache"                                    # Windows font cache
                 #"FrameServer"                                 # Windows Camera Frame Server (Allows multiple clients to access video frames from camera devices)
-                "gupdate"                                      # Google Update
+                "GoogleChromeElevationService"                 # Google Update Service
+                "gupdate"                                      # Another Google Update
                 "gupdatem"                                     # Another Google Update Service
                 "iphlpsvc"                                     # ipv6(Most websites use ipv4 instead)
-                "lfsvc"                                        # Geolocation Service
+                #"lfsvc"                                        # Geolocation Service
                 #"LicenseManager"                              # Disable LicenseManager (Windows Store may not work properly)
                 "lmhosts"                                      # TCP/IP NetBIOS Helper
                 "MapsBroker"                                   # Downloaded Maps Manager
@@ -782,11 +786,13 @@ $WPFtweaksbutton.Add_Click({
                 "PcaSvc"                                       # Program Compatibility Assistant Service
                 "PerfHost"                                     # Remote users and 64-bit processes to query performance.
                 "PhoneSvc"                                     # Phone Service(Manages the telephony state on the device)
-                #"PNRPsvc"                                     # Peer Name Resolution Protocol (Some peer-to-peer and collaborative applications, such as Remote Assistance, may not function, Discord will still work)
-                #"p2psvc"                                      # Peer Name Resolution Protocol(Enables multi-party communication using Peer-to-Peer Grouping.  If disabled, some applications, such as HomeGroup, may not function. Discord will still work)iscord will still work)
-                #"p2pimsvc"                                    # Peer Networking Identity Manager (Peer-to-Peer Grouping services may not function, and some applications, such as HomeGroup and Remote Assistance, may not function correctly. Discord will still work)
+                "PNRPsvc"                                      # Peer Name Resolution Protocol (Some peer-to-peer and collaborative applications, such as Remote Assistance, may not function, Discord will still work)
+                "p2psvc"                                       # Peer Name Resolution Protocol(Enables multi-party communication using Peer-to-Peer Grouping.  If disabled, some applications, such as HomeGroup, may not function. Discord will still work)iscord will still work)
+                "p2pimsvc"                                     # Peer Networking Identity Manager (Peer-to-Peer Grouping services may not function, and some applications, such as HomeGroup and Remote Assistance, may not function correctly. Discord will still work)
                 "PrintNotify"                                  # Windows printer notifications and extentions
                 "QWAVE"                                        # Quality Windows Audio Video Experience (audio and video might sound worse)
+                "RasAuto"                                      # Remote Access Auto Connection Manager
+                "RasMan"                                       # Remote Access Connection Manager
                 "RemoteAccess"                                 # Routing and Remote Access
                 "RemoteRegistry"                               # Remote Registry
                 "RetailDemo"                                   # Demo Mode for Store Display
@@ -795,10 +801,10 @@ $WPFtweaksbutton.Add_Click({
                 "seclogon"                                     # Secondary Logon (Disables other credentials only password will work)
                 "SEMgrSvc"                                     # Payments and NFC/SE Manager (Manages payments and Near Field Communication (NFC) based secure elements)
                 "SharedAccess"                                 # Internet Connection Sharing (ICS)
-                #"Spooler"                                     # Printing
+                "Spooler"                                      # Printing
                 "stisvc"                                       # Windows Image Acquisition (WIA)
                 #"StorSvc"                                     # StorSvc (usb external hard drive will not be reconized by windows)
-                "SysMain"                                      # Analyses System Usage and Improves Performance
+                #"SysMain"                                     # Analyses System Usage and Improves Performance
                 "TrkWks"                                       # Distributed Link Tracking Client
                 #"WbioSrvc"                                    # Windows Biometric Service (required for Fingerprint reader / facial detection)
                 "WerSvc"                                       # Windows error reporting
@@ -983,7 +989,14 @@ $WPFtweaksbutton.Add_Click({
             New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Force
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2
 
+            # Disable use my sign in info after restart
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableAutomaticRestartSignOn" -Type DWord -Value 1
+
+            Write-Host "Rebuild Performance Counter..."
+            lodctr /r
+            lodctr /r
             
+            $WPFEssTweaksGO.IsChecked = $false
         }
 
         If ( $WPFEssTweaksTele.IsChecked -eq $true ) {
@@ -1037,6 +1050,9 @@ $WPFtweaksbutton.Add_Click({
                 New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" | Out-Null
             }
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 1
+            Write-Host "Stopping and disabling Diagnostics Policy Service..."
+            Stop-Service "DPS" -WarningAction SilentlyContinue
+            Set-Service "DPS" -StartupType Disabled
             Write-Host "Stopping and disabling Diagnostics Tracking Service..."
             Stop-Service "DiagTrack" -WarningAction SilentlyContinue
             Set-Service "DiagTrack" -StartupType Disabled
@@ -1052,7 +1068,9 @@ $WPFtweaksbutton.Add_Click({
             Set-Service "SysMain" -StartupType Disabled
             Write-Host "Disabling Sync Host Service"
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\OneSyncSvc" -Name "Start" -Type DWord -Value 4
-
+            Write-Host "Disabling Geolocation Service..."
+            Stop-Service "lfsvc" -WarningAction SilentlyContinue
+            Set-Service "lfsvc" -StartupType Disabled
             Write-Host "Removing AutoLogger file and restricting directory..."
             $autoLoggerDir = "$env:PROGRAMDATA\Microsoft\Diagnosis\ETLLogs\AutoLogger"
             If (Test-Path "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl") {
@@ -1060,9 +1078,6 @@ $WPFtweaksbutton.Add_Click({
             }
             icacls $autoLoggerDir /deny SYSTEM:`(OI`)`(CI`)F | Out-Null
 
-            Write-Host "Stopping and disabling Diagnostics Tracking Service..."
-            Stop-Service "DiagTrack"
-            Set-Service "DiagTrack" -StartupType Disabled
             $WPFEssTweaksTele.IsChecked = $false
         }
         If ( $WPFEssTweaksWifi.IsChecked -eq $true ) {
@@ -1178,6 +1193,12 @@ $WPFtweaksbutton.Add_Click({
             $WPFMiscTweaksNvidia.IsChecked = $false
         }
 
+        If ( $WPFMiscTweaksContextWin11.IsChecked -eq $true ) {
+            Write-Host "Restore old context menu on Windows 11..."
+            New-Item -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Force
+            Set-ItemProperty -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(Default)" -Type String -Value ''
+            $WPFMiscTweaksContextWin11.IsChecked = $false
+        }
         If ( $WPFMiscTweaksLapNum.IsChecked -eq $true ) {
             Write-Host "Disabling NumLock after startup..."
             If (!(Test-Path "HKU:")) {
@@ -1528,7 +1549,9 @@ $WPFundoall.Add_Click({
         New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Force 
         New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Force
         New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Force
-        
+
+        Write-Host "Restore new context menu on Windows 11..."
+        Remove-Item -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" -Recurse -Force      
         
         Write-Host "Essential Undo Completed"
 
