@@ -193,6 +193,7 @@
 							<CheckBox Name="MiscTweaksDisableDefender" Content="Disable Windows Defender" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksEnableDefender" Content="Enable Windows Defender" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksNvidia" Content="Nvidia Optimized Settings" Margin="5,0"/>
+							<CheckBox Name="MiscTweaksContextWin11" Content="Restore Old Context Menu (Win 11)" Margin="5,0"/>
 
 							<Button Name="tweaksbutton" Background="AliceBlue" Content="Run Tweaks" Margin="20,10,20,0"/>
 							<Button Name="undoall" Background="AliceBlue" Content="Undo All Tweaks" Margin="20,5"/>
