@@ -36,6 +36,9 @@
     "Installchrome": {
       "winget": "Google.Chrome"
     },
+    "Installtor": {
+      "winget": "TorProject.TorBrowser"
+    },
     "Installchromium": {
       "winget": "eloston.ungoogled-chromium"
     },
@@ -77,6 +80,9 @@
     },
     "Installgpuz": {
       "winget": "TechPowerUp.GPU-Z"
+    },
+    "Installglaryutilities": {
+      "winget": "Glarysoft.GlaryUtilities"
     },
     "Installgreenshot": {
       "winget": "Greenshot.Greenshot"
@@ -198,6 +204,9 @@
     "Installterminal": {
       "winget": "Microsoft.WindowsTerminal"
     },
+    "Installidm": {
+      "winget": "Tonec.InternetDownloadManager"
+    },
     "Installtreesize": {
       "winget": "JAMSoftware.TreeSize.Free"
     },
@@ -213,6 +222,9 @@
     "Installvlc": {
       "winget": "VideoLAN.VLC"
     },
+    "Installkdenlive": {
+      "winget": "KDE.Kdenlive"
+    },
     "Installvoicemeeter": {
       "winget": "VB-Audio.Voicemeeter"
     },
@@ -225,14 +237,23 @@
     "Installwindirstat": {
       "winget": "WinDirStat.WinDirStat"
     },
+    "Installwiztree": {
+      "winget": "AntibodySoftware.WizTree"
+    },
     "Installwinscp": {
       "winget": "WinSCP.WinSCP"
     },
     "Installwireshark": {
       "winget": "WiresharkFoundation.Wireshark"
     },
+    "Installsimplewall": {
+      "winget": "Henry++.simplewall"
+    },
     "Installzoom": {
       "winget": "Zoom.Zoom"
+    },
+    "Installviber": {
+      "winget": "Viber.Viber"
     },
     "Installtwinkletray": {
       "winget": "xanderfrangos.twinkletray"
