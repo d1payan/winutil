@@ -1125,8 +1125,9 @@ $WPFtweaksbutton.Add_Click({
 
         If ( $WPFMiscTweaksBitsumPlan.IsChecked -eq $true ) {
             Write-Host "Activating Bitsum Optimized Power Plan..."
-            curl.exe -s "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -o _BitsumHighestPerformance.pow
-            powercfg -import ".\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
+            Import-Module BitsTransfer
+            Start-BitsTransfer -source "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -Destination "$env:windir\_BitsumHighestPerformance.pow"
+            powercfg -import "$env:windir\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
             powercfg -SETACTIVE 77777777-7777-7777-7777-777777777777
         }
 
