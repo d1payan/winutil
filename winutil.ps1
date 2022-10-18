@@ -1129,6 +1129,7 @@ $WPFtweaksbutton.Add_Click({
             Start-BitsTransfer -source "https://raw.githubusercontent.com/d1payan/winutilpp/main/files/_BitsumHighestPerformance.pow" -Destination "$env:windir\_BitsumHighestPerformance.pow"
             powercfg -import "$env:windir\_BitsumHighestPerformance.pow" 77777777-7777-7777-7777-777777777777
             powercfg -SETACTIVE 77777777-7777-7777-7777-777777777777
+            $WPFMiscTweaksBitsumPlan.IsChecked = $false
         }
 
         If ( $WPFMiscTweaksDisableDefender.IsChecked -eq $true ) {
