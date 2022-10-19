@@ -31,7 +31,7 @@ catch {
 # Store Form Objects In PowerShell
 #===========================================================================
  
-$xaml.SelectNodes("//*[@Name]") | % { Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name) }
+$xaml.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name) }
  
 Function Get-FormVariables {
     If ($global:ReadmeDisplay -ne $true) { Write-host "If you need to reference this display again, run Get-FormVariables" -ForegroundColor Yellow; $global:ReadmeDisplay = $true }
@@ -233,12 +233,10 @@ $WPFinstall.Add_Click({
             $WPFInstallvlc.IsChecked = $false
         }
         If ( $WPFInstallvscode.IsChecked -eq $true ) { 
-            $wingetinstall.Add("Git.Git")
             $wingetinstall.Add("Microsoft.VisualStudioCode --source winget")
             $WPFInstallvscode.IsChecked = $false
         }
         If ( $WPFInstallvscodium.IsChecked -eq $true ) { 
-            $wingetinstall.Add("Git.Git")
             $wingetinstall.Add("VSCodium.VSCodium")
             $WPFInstallvscodium.IsChecked = $false
         }
@@ -438,6 +436,10 @@ $WPFinstall.Add_Click({
             $wingetinstall.Add("xanderfrangos.twinkletray")
             $WPFInstalltwinkletray.IsChecked = $false
         }
+        If ( $WPFInstallgit.IsChecked -eq $true ) {
+            $wingetinstall.Add("Git.Git")
+            $WPFInstallgit.IsChecked = $false
+        }
 
         # Check if winget is installed
         Write-Host "Checking if Winget is Installed..."
@@ -453,14 +455,14 @@ $WPFinstall.Add_Click({
 
                 #Download Needed Files
                 Write-Host "Downloading Needed Files..."
-                Start-BitsTransfer -Source "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -Destination "./Microsoft.VCLibs.x64.14.00.Desktop.appx"
-                Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Destination "./Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-                Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/b0a0692da1034339b76dce1c298a1e42_License1.xml" -Destination "./b0a0692da1034339b76dce1c298a1e42_License1.xml"
+                Start-BitsTransfer -Source "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -Destination "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx"
+                Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Destination "$env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+                Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/b0a0692da1034339b76dce1c298a1e42_License1.xml" -Destination "$env:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml"
 
                 #Installing Packages
                 Write-Host "Installing Packages..."
-                Add-AppxProvisionedPackage -Online -PackagePath ".\Microsoft.VCLibs.x64.14.00.Desktop.appx" -SkipLicense
-                Add-AppxProvisionedPackage -Online -PackagePath ".\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -LicensePath ".\b0a0692da1034339b76dce1c298a1e42_License1.xml"
+                Add-AppxProvisionedPackage -Online -PackagePath "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -SkipLicense
+                Add-AppxProvisionedPackage -Online -PackagePath "$env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -LicensePath "$env:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml"
                 Write-Host "winget Installed (Reboot might be required before winget will work)"
 
                 #Sleep for 5 seconds to maximize chance that winget will work without reboot
@@ -469,9 +471,9 @@ $WPFinstall.Add_Click({
 
                 #Removing no longer needed Files
                 Write-Host "Removing no longer needed Files..."
-                Remove-Item -Path ".\Microsoft.VCLibs.x64.14.00.Desktop.appx" -Force
-                Remove-Item -Path ".\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Force
-                Remove-Item -Path ".\b0a0692da1034339b76dce1c298a1e42_License1.xml" -Force
+                Remove-Item -Path "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -Force
+                Remove-Item -Path "$env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Force
+                Remove-Item -Path "$env:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml" -Force
                 Write-Host "Removed Files that are no longer needed"
             }
             elseif (((Get-ComputerInfo).WindowsVersion) -lt "1809") {
@@ -500,8 +502,10 @@ $WPFinstall.Add_Click({
         $wingetResult = New-Object System.Collections.Generic.List[System.Object]
         foreach ( $node in $wingetinstall ) {
             try {
-                Start-Process powershell.exe -Verb RunAs -ArgumentList "-command winget install -e --accept-source-agreements --accept-package-agreements --silent $node | Out-Host" -Wait -WindowStyle Maximized
+                Start-Process powershell.exe -Verb RunAs -ArgumentList "-command winget install -e --accept-source-agreements --accept-package-agreements --silent $node | Out-Host" -WindowStyle Normal
                 $wingetResult.Add("$node`n")
+                Start-Sleep -s 3
+                Wait-Process winget -Timeout 90 -ErrorAction SilentlyContinue
             }
             catch [System.InvalidOperationException] {
                 Write-Warning "Allow Yes on User Access Control to Install"
@@ -518,7 +522,7 @@ $WPFinstall.Add_Click({
             }
         }
         $wingetResult.ToArray()
-        $wingetResult | % { $_ } | Out-Host
+        $wingetResult | ForEach-Object { $_ } | Out-Host
 
         # Popup after finished
         $ButtonType = [System.Windows.MessageBoxButton]::OK
@@ -541,7 +545,7 @@ $WPFinstall.Add_Click({
 $WPFInstallUpgrade.Add_Click({
         $isUpgradeSuccess = $false
         try {
-            Start-Process powershell.exe -Verb RunAs -ArgumentList "-command winget upgrade --all  | Out-Host" -Wait -WindowStyle Maximized
+            Start-Process powershell.exe -Verb RunAs -ArgumentList "-command winget upgrade --all  | Out-Host" -Wait -WindowStyle Normal
             $isUpgradeSuccess = $true
         }
         catch [System.InvalidOperationException] {
@@ -565,6 +569,9 @@ $WPFdesktop.Add_Click({
         $WPFEssTweaksAH.IsChecked = $true
         $WPFEssTweaksDeleteTempFiles.IsChecked = $true
         $WPFEssTweaksDeBloat.IsChecked = $false
+        $WPFMiscTweaksRemoveCortana.IsChecked = $false
+        $WPFMiscTweaksRemoveEdge.IsChecked = $false
+        $WPFEssTweaksDiskCleanup.IsChecked = $false
         $WPFEssTweaksDVR.IsChecked = $true
         $WPFEssTweaksHiber.IsChecked = $true
         $WPFEssTweaksHome.IsChecked = $true
@@ -579,7 +586,9 @@ $WPFdesktop.Add_Click({
         $WPFMiscTweaksNum.IsChecked = $true
         $WPFMiscTweaksLapPower.IsChecked = $false
         $WPFMiscTweaksLapNum.IsChecked = $false
-        $WPFMiscTweaksDisableUAC.IsChecked = $true
+        $WPFMiscTweaksDisableUAC.IsChecked = $false
+        $WPFMiscTweaksDisableNotifications.IsChecked = $false
+        $WPFMiscTweaksDisableTPMCheck.IsChecked = $false
         $WPFMiscTweaksBitsumPlan.IsChecked = $true
         $WPFTimerResolutionDesktop.IsChecked = $true
         $WPFTimerResolutionLaptop.IsChecked = $false
@@ -595,6 +604,9 @@ $WPFlaptop.Add_Click({
         $WPFEssTweaksAH.IsChecked = $true
         $WPFEssTweaksDeleteTempFiles.IsChecked = $true
         $WPFEssTweaksDeBloat.IsChecked = $false
+        $WPFMiscTweaksRemoveCortana.IsChecked = $false
+        $WPFMiscTweaksRemoveEdge.IsChecked = $false
+        $WPFEssTweaksDiskCleanup.IsChecked = $false
         $WPFEssTweaksDVR.IsChecked = $true
         $WPFEssTweaksHiber.IsChecked = $false
         $WPFEssTweaksHome.IsChecked = $true
@@ -609,7 +621,9 @@ $WPFlaptop.Add_Click({
         $WPFMiscTweaksLapNum.IsChecked = $true
         $WPFMiscTweaksPower.IsChecked = $false
         $WPFMiscTweaksNum.IsChecked = $false
-        $WPFMiscTweaksDisableUAC.IsChecked = $true
+        $WPFMiscTweaksDisableUAC.IsChecked = $false
+        $WPFMiscTweaksDisableNotifications.IsChecked = $false
+        $WPFMiscTweaksDisableTPMCheck.IsChecked = $false
         $WPFMiscTweaksBitsumPlan.IsChecked = $true
         $WPFTimerResolutionDesktop.IsChecked = $false
         $WPFTimerResolutionLaptop.IsChecked = $true
@@ -625,6 +639,9 @@ $WPFminimal.Add_Click({
         $WPFEssTweaksAH.IsChecked = $false
         $WPFEssTweaksDeleteTempFiles.IsChecked = $true
         $WPFEssTweaksDeBloat.IsChecked = $false
+        $WPFMiscTweaksRemoveCortana.IsChecked = $false
+        $WPFMiscTweaksRemoveEdge.IsChecked = $false
+        $WPFEssTweaksDiskCleanup.IsChecked = $false
         $WPFEssTweaksDVR.IsChecked = $false
         $WPFEssTweaksHiber.IsChecked = $false
         $WPFEssTweaksHome.IsChecked = $true
@@ -640,6 +657,8 @@ $WPFminimal.Add_Click({
         $WPFMiscTweaksLapPower.IsChecked = $false
         $WPFMiscTweaksLapNum.IsChecked = $false
         $WPFMiscTweaksDisableUAC.IsChecked = $false
+        $WPFMiscTweaksDisableNotifications.IsChecked = $false
+        $WPFMiscTweaksDisableTPMCheck.IsChecked = $false
         $WPFMiscTweaksBitsumPlan.IsChecked = $false
         $WPFTimerResolutionDesktop.IsChecked = $false
         $WPFTimerResolutionLaptop.IsChecked = $false
@@ -651,6 +670,19 @@ $WPFminimal.Add_Click({
     })
 
 $WPFtweaksbutton.Add_Click({
+        Write-Host "Doing Security checks for Administrator Account and Group Policy"
+        if (($(Get-WMIObject -class Win32_ComputerSystem | Select-Object username).username).IndexOf('Administrator') -eq -1) {
+            net user administrator /active:no
+        }
+    
+        if (!(((Get-ComputerInfo).WindowsEditionId).IndexOf('Core') -eq -1) -or !(((Get-ComputerInfo).WindowsEditionId).IndexOf('Home') -eq -1)) {
+            # Not sure if home edition is Core or Home
+            Write-Host "Enabling gpedit.msc...Group Policy for Home Users"
+            Get-ChildItem @(
+                "$env:SystemDrive\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package*.mum",
+                "$env:SystemDrive\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package*.mum"
+            ) | ForEach-Object { dism.exe /online /norestart /add-package:"$_" }
+        }
 
         If (($WPFEssTweaksDVR.IsChecked -eq $true) -or ($WPFMiscTweaksDisableDefender.IsChecked -eq $true)) {
             #Installing PowerRun to edit some restricted registry keys
@@ -659,7 +691,6 @@ $WPFtweaksbutton.Add_Click({
             Copy-Item -Path ".\PowerRun\PowerRun.exe" -Destination "$env:windir" -Force
             Remove-Item -Path ".\PowerRun\", ".\PowerRun.zip" -Recurse
         }
-
         If ( $WPFEssTweaksAH.IsChecked -eq $true ) {
             Write-Host "Disabling Activity History..."
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type DWord -Value 0
@@ -667,15 +698,19 @@ $WPFtweaksbutton.Add_Click({
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type DWord -Value 0
             $WPFEssTweaksAH.IsChecked = $false
         }
-
         If ( $WPFEssTweaksDeleteTempFiles.IsChecked -eq $true ) {
             Write-Host "Delete Temp Files"
             Get-ChildItem -Path "$env:windir\Temp" *.* -Recurse | Remove-Item -Force -Recurse
             Get-ChildItem -Path $env:TEMP *.* -Recurse | Remove-Item -Force -Recurse
             Get-ChildItem -Path "$env:windir\Prefetch" *.* -Recurse | Remove-Item -Force -Recurse
             $WPFEssTweaksDeleteTempFiles.IsChecked = $false
+            Write-Host "================================="
+            Write-Host "--- !!!!ERRORS ARE NORMAL!!!! ---"
+            Write-Host "--- Cleaned following folders:---"
+            Write-Host "--- C:\Windows\Temp           ---"
+            Write-Host "---"$env:TEMP"---"
+            Write-Host "================================="
         }
-
         If ( $WPFEssTweaksDVR.IsChecked -eq $true ) {
             If (!(Test-Path "HKCU:\System\GameConfigStore")) {
                 New-Item -Path "HKCU:\System\GameConfigStore" -Force
@@ -727,16 +762,33 @@ $WPFtweaksbutton.Add_Click({
             ./OOSU10.exe ooshutup10.cfg /quiet
             $WPFEssTweaksOO.IsChecked = $false
         }
+        If ( $WPFMiscTweaksDisableTPMCheck.IsChecked -eq $true ) {
+            Write-Host "Disabling TPM Check..."
+            If (!(Test-Path "HKLM:\SYSTEM\Setup\MoSetup")) {
+                New-Item -Path "HKLM:\SYSTEM\Setup\MoSetup" -Force | Out-Null
+            }
+            Set-ItemProperty -Path "HKLM:\SYSTEM\Setup\MoSetup" -Name "AllowUpgradesWithUnsupportedTPM" -Type DWord -Value 1
+            $WPFMiscTweaksDisableTPMCheck.IsChecked = $false
+        }
+        If ( $WPFEssTweaksDiskCleanup.IsChecked -eq $true ) {
+            Write-Host "Running Disk Cleanup on Drive C:..."
+            cmd /c cleanmgr.exe /d C: /VERYLOWDISK
+            $WPFEssTweaksDiskCleanup.IsChecked = $false
+        }
         If ( $WPFMiscTweaksDisableUAC.IsChecked -eq $true) {
             Write-Host "Disabling UAC..."
-            # This below is the pussy mode which can break some apps. Please. Leave this on 1.
-            # below i will show a way to do it without breaking some Apps that check UAC. U need to be admin tho.
-            # Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Type DWord -Value 0
-            Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Type DWord -Value 0 # Default is 5
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Type DWord -Value 0
+            #Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 0 # Default is 5
             # This will set the GPO Entry in Security so that Admin users elevate without any prompt while normal users still elevate and u can even leave it ennabled.
             # It will just not bother u anymore
-
             $WPFMiscTweaksDisableUAC.IsChecked = $false
+        }
+        If ( $WPFMiscTweaksDisableNotifications.IsChecked -eq $true ) {
+            Write-Host "Disabling Notifications and Action Center..."
+            New-Item -Path "HKCU:\Software\Policies\Microsoft\Windows" -Name "Explorer" -force
+            New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Windows\Explorer" -Name "DisableNotificationCenter" -PropertyType "DWord" -Value 1
+            New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "ToastEnabled" -PropertyType "DWord" -Value 0 -force
+            $WPFMiscTweaksDisableNotifications.IsChecked = $false
         }
         If ( $WPFEssTweaksRP.IsChecked -eq $true ) {
             Write-Host "Creating Restore Point in case something bad happens"
@@ -883,6 +935,9 @@ $WPFtweaksbutton.Add_Click({
 
             Write-Host "Changing default Explorer view to This PC..."
             Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type DWord -Value 1 
+
+            ## Enable Long Paths
+            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Type DWORD -Value 1
         
             Write-Host "Disabling Transparency..."
             Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "EnableTransparency" -Type DWord -Value 0
@@ -1234,7 +1289,7 @@ $WPFtweaksbutton.Add_Click({
         If ( $WPFMiscTweaksUTC.IsChecked -eq $true ) {
             Write-Host "Setting BIOS time to UTC..."
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -Type DWord -Value 1
-            $WPFMiscTweaksUTC.IsChecked
+            $WPFMiscTweaksUTC.IsChecked = $false
         }
 
         If ( $WPFMiscTweaksDisplay.IsChecked -eq $true ) {
@@ -1252,122 +1307,177 @@ $WPFtweaksbutton.Add_Click({
             Write-Host "Adjusted visual effects for performance"
             $WPFMiscTweaksDisplay.IsChecked = $false
         }
+        If ( $WPFMiscTweaksRemoveCortana.IsChecked -eq $true ) {
+            Write-Host "Removing Cortana..."
+            Get-AppxPackage -allusers Microsoft.549981C3F5F10 | Remove-AppxPackage
+            $WPFMiscTweaksRemoveCortana.IsChecked = $false
+        }
+        If ( $WPFMiscTweaksRemoveEdge.IsChecked -eq $true ) {
+            Write-Host "Removing Microsoft Edge..."
+            Invoke-WebRequest -useb https://raw.githubusercontent.com/ChrisTitusTech/winutil/main/Edge_Removal.bat | Invoke-Expression
+            $WPFMiscTweaksRemoveEdge.IsChecked = $false
+        }
 
         If ( $WPFEssTweaksDeBloat.IsChecked -eq $true ) {
             $Bloatware = @(
-                #Unnecessary Windows 10 AppX Apps
-                "Microsoft.3DBuilder"
-                "Microsoft.Microsoft3DViewer"
-                "Microsoft.AppConnector"
-                "Microsoft.BingFinance"
-                "Microsoft.BingNews"
-                "Microsoft.BingSports"
-                "Microsoft.BingTranslator"
-                "Microsoft.BingWeather"
-                "Microsoft.BingFoodAndDrink"
-                "Microsoft.BingHealthAndFitness"
-                "Microsoft.BingTravel"
-                "Microsoft.MinecraftUWP"
-                "Microsoft.GamingServices"
-                # "Microsoft.WindowsReadingList"
-                "Microsoft.GetHelp"
-                "Microsoft.Getstarted"
-                "Microsoft.Messaging"
-                "Microsoft.Microsoft3DViewer"
-                "Microsoft.MicrosoftSolitaireCollection"
-                "Microsoft.NetworkSpeedTest"
-                "Microsoft.News"
-                "Microsoft.Office.Lens"
-                "Microsoft.Office.Sway"
-                "Microsoft.Office.OneNote"
-                "Microsoft.OneConnect"
-                "Microsoft.People"
-                "Microsoft.Print3D"
-                "Microsoft.SkypeApp"
-                "Microsoft.Wallet"
-                "Microsoft.Whiteboard"
-                "Microsoft.WindowsAlarms"
-                "microsoft.windowscommunicationsapps"
-                "Microsoft.WindowsFeedbackHub"
-                "Microsoft.WindowsMaps"
-                "Microsoft.WindowsPhone"
-                "Microsoft.WindowsSoundRecorder"
-                "Microsoft.XboxApp"
-                "Microsoft.ConnectivityStore"
-                "Microsoft.CommsPhone"
-                "Microsoft.ScreenSketch"
-                "Microsoft.Xbox.TCUI"
-                "Microsoft.XboxGameOverlay"
-                "Microsoft.XboxGameCallableUI"
-                "Microsoft.XboxSpeechToTextOverlay"
-                "Microsoft.MixedReality.Portal"
-                "Microsoft.ZuneMusic"
-                "Microsoft.ZuneVideo"
-                #"Microsoft.YourPhone"
-                "Microsoft.Getstarted"
-                "Microsoft.MicrosoftOfficeHub"
+                #Unnecessary Windows Apps
+                "3DBuilder"
+                "Microsoft3DViewer"
+                "AppConnector"
+                "BingFinance"
+                "BingNews"
+                "BingSports"
+                "BingTranslator"
+                "BingWeather"
+                "BingFoodAndDrink"
+                "BingHealthAndFitness"
+                "BingTravel"
+                "MinecraftUWP"
+                "GamingServices"
+                # "WindowsReadingList"
+                "GetHelp"
+                "Getstarted"
+                "Messaging"
+                "Microsoft3DViewer"
+                "MicrosoftSolitaireCollection"
+                "NetworkSpeedTest"
+                "News"
+                "Lens"
+                "Sway"
+                "OneNote"
+                "OneConnect"
+                "People"
+                "Print3D"
+                "SkypeApp"
+                "Todos"
+                "Wallet"
+                "Whiteboard"
+                "WindowsAlarms"
+                "WindowsCamera"
+                "windowscommunicationsapps"
+                "WindowsFeedbackHub"
+                "WindowsMaps"
+                "WindowsPhone"
+                "WindowsSoundRecorder"
+                "XboxApp"
+                "ConnectivityStore"
+                "CommsPhone"
+                "ScreenSketch"
+                "TCUI"
+                "XboxGameOverlay"
+                "XboxGamingOverlay"
+                "XboxGameCallableUI"
+                "XboxSpeechToTextOverlay"
+                "XboxIdentityProvider"
+                "MixedReality.Portal"
+                "ZuneMusic"
+                "ZuneVideo"
+                "YourPhone"
+                "Getstarted"
+                "MicrosoftOfficeHub"
 
-                #Sponsored Windows 10 AppX Apps
+                #Sponsored Windows Apps
                 #Add sponsored/featured apps to remove in the "*AppName*" format
-                "*EclipseManager*"
-                "*ActiproSoftwareLLC*"
-                "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
-                "*Duolingo-LearnLanguagesforFree*"
-                "*PandoraMediaInc*"
-                "*CandyCrush*"
-                "*BubbleWitch3Saga*"
-                "*Wunderlist*"
-                "*Flipboard*"
-                "*Twitter*"
-                "*Facebook*"
-                "*Royal Revolt*"
-                "*Sway*"
-                "*Speed Test*"
-                "*Dolby*"
-                "*Viber*"
-                "*ACGMediaPlayer*"
-                "*Netflix*"
-                "*OneCalendar*"
-                "*LinkedInforWindows*"
-                "*HiddenCityMysteryofShadows*"
-                "*Hulu*"
-                "*HiddenCity*"
-                "*AdobePhotoshopExpress*"
-                "*HotspotShieldFreeVPN*"
+                "EclipseManager"
+                "ActiproSoftwareLLC"
+                "AdobeSystemsIncorporated.AdobePhotoshopExpress"
+                "Duolingo-LearnLanguagesforFree"
+                "PandoraMediaInc"
+                "CandyCrush"
+                "BubbleWitch3Saga"
+                "Wunderlist"
+                "Flipboard"
+                "Twitter"
+                "Facebook"
+                "Royal Revolt"
+                "Sway"
+                "Speed Test"
+                "Dolby"
+                "Viber"
+                "ACGMediaPlayer"
+                "Netflix"
+                "OneCalendar"
+                "LinkedInforWindows"
+                "HiddenCityMysteryofShadows"
+                "Hulu"
+                "HiddenCity"
+                "AdobePhotoshopExpress"
+                "HotspotShieldFreeVPN"
 
                 #Optional: Typically not removed but you can if you need to
-                "*Microsoft.Advertising.Xaml*"
-                #"*Microsoft.MSPaint*"
-                #"*Microsoft.MicrosoftStickyNotes*"
-                #"*Microsoft.Windows.Photos*"
-                #"*Microsoft.WindowsCalculator*"
-                #"*Microsoft.WindowsStore*"
+                "Advertising"
+                #"MSPaint"
+                "MicrosoftStickyNotes"
+                #"Windows.Photos"
+                #"WindowsCalculator"
+                #"WindowsStore"
             )
+
+            ## Teams Removal
+            # Remove Teams Machine-Wide Installer
+            Write-Host "Removing Teams Machine-wide Installer" -ForegroundColor Yellow
+            $MachineWide = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq "Teams Machine-Wide Installer" }
+            $MachineWide.Uninstall()
+            # Remove Teams for Current Users
+            $localAppData = "$($env:LOCALAPPDATA)\Microsoft\Teams"
+            $programData = "$($env:ProgramData)\$($env:USERNAME)\Microsoft\Teams"
+            If (Test-Path "$($localAppData)\Current\Teams.exe") {
+                unInstallTeams($localAppData)
+            }
+            elseif (Test-Path "$($programData)\Current\Teams.exe") {
+                unInstallTeams($programData)
+            }
+            else {
+                Write-Warning "Teams installation not found"
+            }
+            # Get all Users
+            $Users = Get-ChildItem -Path "$($ENV:SystemDrive)\Users"
+            # Process all the Users
+            $Users | ForEach-Object {
+                Write-Host "Process user: $($_.Name)" -ForegroundColor Yellow
+                #Locate installation folder
+                $localAppData = "$($ENV:SystemDrive)\Users\$($_.Name)\AppData\Local\Microsoft\Teams"
+                $programData = "$($env:ProgramData)\$($_.Name)\Microsoft\Teams"
+                If (Test-Path "$($localAppData)\Current\Teams.exe") {
+                    unInstallTeams($localAppData)
+                }
+                elseif (Test-Path "$($programData)\Current\Teams.exe") {
+                    unInstallTeams($programData)
+                }
+                else {
+                    Write-Warning "Teams installation not found for user $($_.Name)"
+                }
+            }
+            cmd /c winget uninstall -h "Microsoft Teams"
 
             Write-Host "Removing Bloatware"
 
             foreach ($Bloat in $Bloatware) {
-                Get-AppxPackage -Name $Bloat | Remove-AppxPackage
-                Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
+                Get-AppxPackage "*$Bloat*" | Remove-AppxPackage
+                Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like "*$Bloat*" | Remove-AppxProvisionedPackage -Online
                 Write-Host "Trying to remove $Bloat."
             }
 
             Write-Host "Finished Removing Bloatware Apps"
+            Write-Host "Removing Bloatware Programs"
+            # Remove installed programs
+            $InstalledPrograms = Get-Package | Where-Object { $UninstallPrograms -contains $_.Name }
+            $InstalledPrograms | ForEach-Object {
+
+                Write-Host -Object "Attempting to uninstall: [$($_.Name)]..."
+
+                Try {
+                    $Null = $_ | Uninstall-Package -AllVersions -Force -ErrorAction Stop
+                    Write-Host -Object "Successfully uninstalled: [$($_.Name)]"
+                }
+                Catch {
+                    Write-Warning -Message "Failed to uninstall: [$($_.Name)]"
+                }
+            }
+            Write-Host "Finished Removing Bloatware Programs"
             $WPFEssTweaksDeBloat.IsChecked = $false
         }
-        Write-Host "Doing Security checks for Administrator Account and Group Policy"
-        if (($(Get-WMIObject -class Win32_ComputerSystem | select username).username).IndexOf('Administrator') -eq -1) {
-            net user administrator /active:no
-        }
-    
-        if (!(((Get-ComputerInfo).WindowsEditionId).IndexOf('Core') -eq -1) -or !(((Get-ComputerInfo).WindowsEditionId).IndexOf('Home') -eq -1)) {
-            # Not sure if home edition is Core or Home
-            Write-Host "Enabling gpedit.msc...Group Policy for Home Users"
-            Get-ChildItem @(
-                "$env:SystemDrive\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package*.mum",
-                "$env:SystemDrive\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package*.mum"
-            ) | ForEach-Object { dism.exe /online /norestart /add-package:"$_" }
-        }
+        
         Write-Host "================================="
         Write-Host "---    Tweaks are Finished    ---"
         Write-Host "---       Please Restart      ---" 
@@ -1555,7 +1665,18 @@ $WPFundoall.Add_Click({
         New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" -Force
 
         Write-Host "Restore new context menu on Windows 11..."
-        Remove-Item -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" -Recurse -Force      
+        Remove-Item -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" -Recurse -Force   
+           
+        Write-Host "Enabling Notifications and Action Center"
+        Remove-Item -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Force
+        Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "ToastEnabled"
+        Write-Host "Restoring Default Right Click Menu Layout"
+        Remove-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" -Recurse -Confirm:$false -Force
+
+        Write-Host "Reset News and Interests"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -Type DWord -Value 1
+        # Remove "News and Interest" from taskbar
+        Set-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 0
         
         Write-Host "Essential Undo Completed"
 

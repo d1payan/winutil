@@ -67,7 +67,7 @@
       "winget": "GIMP.GIMP"
     },
     "Installgithubdesktop": {
-      "winget": "Git.Git;GitHub.GitHubDesktop"
+      "winget": "GitHub.GitHubDesktop"
     },
     "Installgog": {
       "winget": "GOG.Galaxy"
@@ -214,10 +214,10 @@
       "winget": "VB-Audio.Voicemeeter"
     },
     "Installvscode": {
-      "winget": "Git.Git;Microsoft.VisualStudioCode --source winget"
+      "winget": "Microsoft.VisualStudioCode --source winget"
     },
     "Installvscodium": {
-      "winget": "Git.Git;VSCodium.VSCodium"
+      "winget": "VSCodium.VSCodium"
     },
     "Installwindirstat": {
       "winget": "WinDirStat.WinDirStat"
@@ -254,6 +254,9 @@
     },
     "Installtwinkletray": {
       "winget": "xanderfrangos.twinkletray"
+    },
+    "Installgit": {
+      "winget": "Git.Git"
     }
   }
 }

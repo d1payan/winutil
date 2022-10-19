@@ -53,6 +53,7 @@
 
 							<Label Content="Development" FontSize="16" Margin="5,0"/>
 							<CheckBox Name="Installatom" Content="Atom" Margin="5,0"/>
+							<CheckBox Name="Installgit" Content="Git" Margin="5,0"/>
 							<CheckBox Name="Installgithubdesktop" Content="GitHub Desktop" Margin="5,0"/>
 							<CheckBox Name="Installjava8" Content="OpenJDK Java 8" Margin="5,0"/>
 							<CheckBox Name="Installjava16" Content="OpenJDK Java 16" Margin="5,0"/>
@@ -167,6 +168,7 @@
 							<CheckBox Name="EssTweaksWifi" Content="Disable Wifi-Sense" Margin="5,0"/>
 							<CheckBox Name="EssTweaksAH" Content="Disable Activity History" Margin="5,0"/>
 							<CheckBox Name="EssTweaksDeleteTempFiles" Content="Delete Temporary Files" Margin="5,0"/>
+							<CheckBox Name="EssTweaksDiskCleanup" Content="Run Disk Cleanup" Margin="5,0"/>
 							<CheckBox Name="EssTweaksLoc" Content="Disable Location Tracking" Margin="5,0"/>
 							<CheckBox Name="EssTweaksHome" Content="Disable Homegroup" Margin="5,0"/>
 							<CheckBox Name="EssTweaksStorage" Content="Disable Storage Sense" Margin="5,0"/>
@@ -188,12 +190,16 @@
 							<CheckBox Name="MiscTweaksDisplay" Content="Set Display for Performance" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksUTC" Content="Set Time to UTC (Dual Boot)" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksDisableUAC" Content="Disable UAC" Margin="5,0"/>
+							<CheckBox Name="MiscTweaksDisableNotifications" Content="Disable Notification" Margin="5,0"/>
+							<CheckBox Name="MiscTweaksDisableTPMCheck" Content="Disable TPM on Update" Margin="5,0"/>
 							<CheckBox Name="EssTweaksDeBloat" Content="Remove ALL MS Store Apps" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksBitsumPlan" Content="Activate Bitsum Optimized Power Plan" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksDisableDefender" Content="Disable Windows Defender" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksEnableDefender" Content="Enable Windows Defender" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksNvidia" Content="Nvidia Optimized Settings" Margin="5,0"/>
 							<CheckBox Name="MiscTweaksContextWin11" Content="Restore Old Context Menu (Win 11)" Margin="5,0"/>
+							<CheckBox Name="MiscTweaksRemoveCortana" Content="Remove Cortana" Margin="5,0"/>
+							<CheckBox Name="MiscTweaksRemoveEdge" Content="Remove Microsoft Edge" Margin="5,0"/>
 
 							<Button Name="tweaksbutton" Background="AliceBlue" Content="Run Tweaks" Margin="20,10,20,0"/>
 							<Button Name="undoall" Background="AliceBlue" Content="Undo All Tweaks" Margin="20,5"/>
