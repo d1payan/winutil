@@ -1,5 +1,5 @@
 #for CI/CD
-$BranchToUse = 'main-test'
+$BranchToUse = 'ctt-test'
 
 <#
 .NOTES
