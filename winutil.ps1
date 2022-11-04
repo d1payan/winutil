@@ -116,7 +116,7 @@ $WPFinstall.Add_Click({
             $WPFInstallautohotkey.IsChecked = $false
         }  
         If ( $WPFInstallbrave.IsChecked -eq $true ) { 
-            $wingetinstall.Add("BraveSoftware.BraveBrowser")
+            $wingetinstall.Add("Brave.Brave")
             $WPFInstallbrave.IsChecked = $false
         }
         If ( $WPFInstallchrome.IsChecked -eq $true ) { 
