@@ -1415,40 +1415,40 @@ $WPFtweaksbutton.Add_Click({
 
             ## Teams Removal
             # Remove Teams Machine-Wide Installer
-            Write-Host "Removing Teams Machine-wide Installer" -ForegroundColor Yellow
-            $MachineWide = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq "Teams Machine-Wide Installer" }
-            $MachineWide.Uninstall()
+            #Write-Host "Removing Teams Machine-wide Installer" -ForegroundColor Yellow
+            #$MachineWide = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq "Teams Machine-Wide Installer" }
+            #$MachineWide.Uninstall()
             # Remove Teams for Current Users
-            $localAppData = "$($env:LOCALAPPDATA)\Microsoft\Teams"
-            $programData = "$($env:ProgramData)\$($env:USERNAME)\Microsoft\Teams"
-            If (Test-Path "$($localAppData)\Current\Teams.exe") {
-                unInstallTeams($localAppData)
-            }
-            elseif (Test-Path "$($programData)\Current\Teams.exe") {
-                unInstallTeams($programData)
-            }
-            else {
-                Write-Warning "Teams installation not found"
-            }
+            #$localAppData = "$($env:LOCALAPPDATA)\Microsoft\Teams"
+            #$programData = "$($env:ProgramData)\$($env:USERNAME)\Microsoft\Teams"
+            #If (Test-Path "$($localAppData)\Current\Teams.exe") {
+            #    unInstallTeams($localAppData)
+            #}
+            #elseif (Test-Path "$($programData)\Current\Teams.exe") {
+            #    unInstallTeams($programData)
+            #}
+            #else {
+            #    Write-Warning "Teams installation not found"
+            #}
             # Get all Users
-            $Users = Get-ChildItem -Path "$($ENV:SystemDrive)\Users"
+            #$Users = Get-ChildItem -Path "$($ENV:SystemDrive)\Users"
             # Process all the Users
-            $Users | ForEach-Object {
-                Write-Host "Process user: $($_.Name)" -ForegroundColor Yellow
+            #$Users | ForEach-Object {
+            #    Write-Host "Process user: $($_.Name)" -ForegroundColor Yellow
                 #Locate installation folder
-                $localAppData = "$($ENV:SystemDrive)\Users\$($_.Name)\AppData\Local\Microsoft\Teams"
-                $programData = "$($env:ProgramData)\$($_.Name)\Microsoft\Teams"
-                If (Test-Path "$($localAppData)\Current\Teams.exe") {
-                    unInstallTeams($localAppData)
-                }
-                elseif (Test-Path "$($programData)\Current\Teams.exe") {
-                    unInstallTeams($programData)
-                }
-                else {
-                    Write-Warning "Teams installation not found for user $($_.Name)"
-                }
-            }
-            cmd /c winget uninstall -h "Microsoft Teams"
+            #    $localAppData = "$($ENV:SystemDrive)\Users\$($_.Name)\AppData\Local\Microsoft\Teams"
+            #    $programData = "$($env:ProgramData)\$($_.Name)\Microsoft\Teams"
+            #    If (Test-Path "$($localAppData)\Current\Teams.exe") {
+            #        unInstallTeams($localAppData)
+            #    }
+            #    elseif (Test-Path "$($programData)\Current\Teams.exe") {
+            #        unInstallTeams($programData)
+            #    }
+            #    else {
+            #        Write-Warning "Teams installation not found for user $($_.Name)"
+            #    }
+            #}
+            #cmd /c winget uninstall -h "Microsoft Teams"
 
             Write-Host "Removing Bloatware"
 
